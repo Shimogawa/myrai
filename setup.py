@@ -30,8 +30,8 @@ def setup_pkg():
     metadata = dict(
         name="myrai",
         version="0.0.1",
-        author="Nekoite",
-        author_email="nekoite@rebuild.moe",
+        author="Rebuild",
+        author_email="admin@rebuild.moe",
         license="MIT",
         description=DESCRIPTION,
         long_description=LONG_DESCRIPTION,
