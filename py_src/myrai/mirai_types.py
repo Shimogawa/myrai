@@ -1,26 +1,93 @@
 from __future__ import annotations
+from abc import ABC, abstractmethod
 from typing import Generic, Type, TypeVar, Union, overload
 from py4j.java_gateway import GatewayClient, JavaObject, JavaClass, is_instance_of
 from py4j.java_collections import JavaArray, JavaList
 
-from myrai.jvm.java import Consumer, Object, gw
+from myrai.jvm.java import JavaEnum, Object, gw
 from myrai._util import FuncProxy
+
+
+###### moe.rebuild.myrai
+
+
+class PyListenerHost(ABC):
+    class Java:
+        implements = ["moe.rebuild.myrai.PyListenerHost"]
+
+    @abstractmethod
+    def onMessage(self, e: MessageEvent):
+        raise NotImplementedError
+
+    def handleException(self, m: JavaObject):
+        pass
+
+    def onMessageWithStat(self, e: MessageEvent):
+        return ListeningStatus.static.LISTENING
+
+
+class MyraiListenerHost(Object):
+    _fqn = "moe.rebuild.myrai.MyraiListenerHost"
+
+
+###### mirai packages
 
 
 class MiraiPackage:
     pass
 
 
+###### net.mamoe.mirai
+
+
 class BotFactory(Object):
-    pass
+    _fqn = "net.mamoe.mirai.BotFactory"
 
 
 class Bot(Object):
-    pass
+    _fqn = "net.mamoe.mirai.Bot"
+
+
+###### net.mamoe.mirai.event
+
+
+class ListeningStatus(JavaEnum):
+    _fqn = "net.mamoe.mirai.event.ListeningStatus"
+
+    @classmethod
+    @property
+    def LISTENING(cls) -> ListeningStatus:
+        return cls.static.LISTENING
+
+    @classmethod
+    @property
+    def STOPPED(cls) -> ListeningStatus:
+        return cls.static.STOPPED
+
+
+class EventPriority(JavaEnum):
+    _fqn = "net.mamoe.mirai.event.EventPriority"
+
+    for name in ["HIGHEST", "HIGH", "NORMAL", "LOW", "LOWEST", "MONITOR"]:
+        exec(
+            f"""
+@classmethod
+@property
+def {name}(cls) -> EventPriority:
+    return cls.static.{name}"""
+        )
+
+
+class SimpleListenerHost(Object):
+    _fqn = "net.mamoe.mirai.event.SimpleListenerHost"
+
+
+class Listener(Object):
+    _fqn = "net.mamoe.mirai.event.Listener"
 
 
 class EventChannel(Object):
-    pass
+    _fqn = "net.mamoe.mirai.event.EventChannel"
 
 
 class Event(Object):
@@ -46,8 +113,67 @@ class GroupEvent(BotEvent):
     _fqn = "net.mamoe.mirai.event.events.GroupEvent"
 
 
+class GroupOperableEvent(GroupEvent):
+    _fqn = "net.mamoe.mirai.event.events.GroupOperableEvent"
+
+
+class UserEvent(BotEvent):
+    _fqn = "net.mamoe.mirai.event.events.UserEvent"
+
+
+class FriendEvent(UserEvent):
+    _fqn = "net.mamoe.mirai.event.events.FriendEvent"
+
+
+class GroupMemberEvent(GroupEvent, UserEvent):
+    _fqn = "net.mamoe.mirai.event.events.GroupMemberEvent"
+
+
 class MessageEvent(Event):
     _fqn = "net.mamoe.mirai.event.events.MessageEvent"
+
+
+class UserMessageEvent(MessageEvent):
+    _fqn = "net.mamoe.mirai.event.events.UserMessageEvent"
+
+
+class FriendMessageEvent(UserMessageEvent, FriendEvent):
+    _fqn = "net.mamoe.mirai.event.events.FriendMessageEvent"
+
+
+class GroupAwareMessageEvent(MessageEvent):
+    _fqn = "net.mamoe.mirai.event.events.GroupAwareMessageEvent"
+
+
+class GroupMessageEvent(GroupAwareMessageEvent, GroupEvent):
+    _fqn = "net.mamoe.mirai.event.events.GroupMessageEvent"
+
+
+class GroupTempMessageEvent(GroupAwareMessageEvent, UserMessageEvent):
+    _fqn = "net.mamoe.mirai.event.events.GroupTempMessageEvent"
+
+
+###### net.mamoe.mirai.message.action
+
+
+class Nudge(Object):
+    _fqn = "net.mamoe.mirai.message.action.Nudge"
+
+
+class BotNudge(Nudge):
+    _fqn = "net.mamoe.mirai.message.action.BotNudge"
+
+
+class UserNudge(Nudge):
+    _fqn = "net.mamoe.mirai.message.action.UserNudge"
+
+
+class MemberNudge(UserNudge):
+    _fqn = "net.mamoe.mirai.message.action.MemberNudge"
+
+
+class FriendNudge(UserNudge):
+    _fqn = "net.mamoe.mirai.message.action.FriendNudge"
 
 
 ###### net.mamoe.mirai.message.data
@@ -109,6 +235,10 @@ class At(MessageContent):
 class MessageUtils(Object):
     _fqn = "net.mamoe.mirai.message.data.MessageUtils"
 
+    @classmethod
+    def newChain(cls, *args):
+        return cls.static.newChain(*args)
+
 
 ###### net.mamoe.mirai.contact
 
@@ -127,3 +257,39 @@ class UserOrBot(ContactOrBot):
 
 class User(Contact, UserOrBot):
     _fqn = "net.mamoe.mirai.contact.User"
+
+
+class Member(User):
+    _fqn = "net.mamoe.mirai.contact.Member"
+
+
+class MemberPermission(JavaEnum):
+    _fqn = "net.mamoe.mirai.contact.MemberPermission"
+
+    @classmethod
+    def MEMBER(cls):
+        return cls.static.MEMBER
+
+    @classmethod
+    def ADMINISTRATOR(cls):
+        return cls.static.ADMINISTRATOR
+
+    @classmethod
+    def OWNER(cls):
+        return cls.static.OWNER
+
+
+class NormalMember(Member):
+    _fqn = "net.mamoe.mirai.contact.NormalMember"
+
+
+class AnonymousMember(Member):
+    _fqn = "net.mamoe.mirai.contact.AnonymousMember"
+
+
+class Group(Contact):
+    _fqn = "net.mamoe.mirai.contact.Group"
+
+
+class Friend(User):
+    _fqn = "net.mamoe.mirai.contact.Friend"

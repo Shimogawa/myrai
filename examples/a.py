@@ -3,9 +3,11 @@ import atexit
 
 sys.path.append("py_src")
 
-from myrai import init, start_bot, subscribe_always, close
+from myrai import init, start_bot, subscribe_always, close, gw
 from myrai.mirai_types import (
     At,
+    EventPriority,
+    ListeningStatus,
     MessageChain,
     MessageEvent,
     MessageUtils,

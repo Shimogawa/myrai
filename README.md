@@ -1,8 +1,14 @@
 # Myrai
 
-用 Python 写你熟悉的 `mirai-core`！（WIP）
+用 Python (>=3.9) 写你熟悉的 [`mirai-core`][mirai-core]！（WIP）
 
-使用了 `py4j`。自带一个接口的 jar 文件，并且会自己启动。可以设置使用其它 jar 文件或不从 Python 端启动。
+使用了 [`py4j`][py4j]。自带一个接口的 jar 文件，并且会自己启动。可以设置使用其它 jar 文件或不从 Python 端启动。
+
+## 简介
+
+为了用 Python 连接 `mirai-core`，现在需要经过 [`mirai-api-http`][mah]。通用方法是使用 [`mirai-console-loader`][mcl] 进行启动，这样太麻烦（需要额外的软件与插件）。为了节省这些麻烦，直接通过 `py4j` 利用 socket 实现了 Python 与 `mirai-core` 的交互，节省了中间使用 HTTP 的麻烦。
+
+至于为什么是 3.9 版本或以上……因为 3.9 好！3.8 没有什么很特别的更新，而 3.7 的支持结束时间是 2023/6/27。
 
 ## 使用方法
 
@@ -36,7 +42,15 @@ def listener(e: MessageEvent):
     )
 ```
 
-**注意：绝对不能直接在 Python 类上调用静态方法，会报错！一定要使用 `.static`。**
+**注意：有些 Java 静态方法 / 成员为了方便使用，可以在 Python 类上直接调用静态方法 / 变量 (实际使用了 classmethod 和 property)。这些方法会有代码提示。没有代码提示的静态方法请使用 `.static`。如果你没有代码提示或不放心一直报错，那就使用 `.static` 调用静态成员。例如：**
+
+```py
+MessageUtils.newChain(...)  # OK
+MessageUtils.static.newChain(...)  # OK
+MessageUtils.static.buildMessageChain(...)  # OK
+
+MessageUtils.buildMessageChain(...)  # 不OK
+```
 
 ### 收尾
 
@@ -54,3 +68,8 @@ import myrai
 
 atexit.register(myrai.close)
 ```
+
+[py4j]: https://github.com/py4j/py4j
+[mirai-core]: https://github.com/mamoe/mirai
+[mah]: https://github.com/project-mirai/mirai-api-http
+[mcl]: https://github.com/iTXTech/mirai-console-loader

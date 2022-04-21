@@ -31,12 +31,18 @@ class Mirai:
         use_bundled=True,
         bridge_jar_file: Optional[str] = None,
         java_cmd: str = "java",
+        **kwargs,
     ):
         if self._started:
             return
         if use_bundled:
             self._java_proc = subprocess.Popen(
-                [java_cmd, "-jar", bridge_jar_file if bridge_jar_file else _DEFAULT_JAR]
+                [
+                    java_cmd,
+                    "-jar",
+                    bridge_jar_file if bridge_jar_file else _DEFAULT_JAR,
+                ],
+                **kwargs,
             )
             time.sleep(1)
             if self._java_proc.poll() is not None:
