@@ -29,7 +29,7 @@ def setup_pkg():
 
     metadata = dict(
         name="myrai",
-        version="0.0.1",
+        version="0.0.2",
         author="Rebuild",
         author_email="admin@rebuild.moe",
         license="AGPLv3",
@@ -42,7 +42,7 @@ def setup_pkg():
         install_requires=[_f for _f in INSTALL_REQUIREMENTS.split("\n") if _f],
         package_dir={"": "py_src"},
         packages=setuptools.find_packages("py_src"),
-        package_data={"myrai": ["resources/*.jar"]},
+        package_data={"myrai": ["resources/*.jar", "*.pyi", "py.typed"]},
         include_package_data=True,
     )
 

@@ -52,6 +52,8 @@ MessageUtils.static.buildMessageChain(...)  # OK
 MessageUtils.buildMessageChain(...)  # 不OK
 ```
 
+> 由于这个新特性（将 `@classmethod` 和 `@property` 用在一起）的不稳定性，Python 可能在后续版本中废弃这个写法（见 [issue](https://github.com/python/cpython/issues/89519)）。所以 `myrai` 的后续版本中也会修改这个用法并降低可使用的 Python 版本。
+
 ### 收尾
 
 ```py

@@ -34,7 +34,7 @@ class PyListenerHost(ABC):
 
 class MyraiListenerHost(SimpleListenerHost):
     @classmethod
-    def new(cls, py_host: PyListenerHost) -> MyraiListenerHost: ...
+    def new(cls, py_host: PyListenerHost) -> MyraiListenerHost: ...  # type: ignore[override]
 
 ###### mirai package
 
@@ -226,16 +226,16 @@ class MessageSource(MessageMetadata, ConstrainSingle):
 
 class QuoteReply(MessageMetadata, ConstrainSingle):
     @classmethod
-    def new(cls, src: MessageChain) -> QuoteReply: ...
+    def new(cls, src: MessageChain) -> QuoteReply: ...  # type: ignore[override]
     def getSource(self) -> MessageSource: ...
 
 class PlainText(MessageContent):
     @classmethod
-    def new(cls, msg: str) -> PlainText: ...
+    def new(cls, msg: str) -> PlainText: ...  # type: ignore[override]
 
 class At(MessageContent):
     @classmethod
-    def new(cls, target: int) -> At: ...
+    def new(cls, target: int) -> At: ...  # type: ignore[override]
     def getTarget(self) -> int: ...
 
 class MessageUtils(Object):

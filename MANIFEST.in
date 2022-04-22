@@ -1,0 +1,3 @@
+include py_src/myrai/resources/*.jar
+include py_src/myrai/**/*.pyi
+global-include *.typed

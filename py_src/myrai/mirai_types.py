@@ -1,6 +1,6 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import Generic, Type, TypeVar, Union, overload
+from typing import Generic, List, Type, TypeVar, Union, overload
 from py4j.java_gateway import GatewayClient, JavaObject, JavaClass, is_instance_of
 from py4j.java_collections import JavaArray, JavaList
 
@@ -22,8 +22,8 @@ class PyListenerHost(ABC):
     def handleException(self, m: JavaObject):
         pass
 
-    def onMessageWithStat(self, e: MessageEvent):
-        return ListeningStatus.static.LISTENING
+    def onMessageWithStat(self, e: MessageEvent) -> ListeningStatus:
+        return ListeningStatus.LISTENING  # type: ignore
 
 
 class MyraiListenerHost(Object):
@@ -57,24 +57,24 @@ class ListeningStatus(JavaEnum):
     @classmethod
     @property
     def LISTENING(cls) -> ListeningStatus:
-        return cls.static.LISTENING
+        return cls.static.LISTENING  # type: ignore
 
     @classmethod
     @property
     def STOPPED(cls) -> ListeningStatus:
-        return cls.static.STOPPED
+        return cls.static.STOPPED  # type: ignore
 
 
 class EventPriority(JavaEnum):
     _fqn = "net.mamoe.mirai.event.EventPriority"
 
-    for name in ["HIGHEST", "HIGH", "NORMAL", "LOW", "LOWEST", "MONITOR"]:
+    for n in ["HIGHEST", "HIGH", "NORMAL", "LOW", "LOWEST", "MONITOR"]:
         exec(
             f"""
 @classmethod
 @property
-def {name}(cls) -> EventPriority:
-    return cls.static.{name}"""
+def {n}(cls) -> EventPriority:
+    return cls.static.{n}"""
         )
 
 
@@ -205,7 +205,7 @@ class MessageContent(SingleMessage):
     @classmethod
     @property
     def Key(cls: Type[_T_M]) -> MessageKey[_T_M]:
-        return cls._java_class.Key
+        return cls._java_class.Key  # type: ignore
 
 
 class MessageChain(Message):
@@ -237,7 +237,7 @@ class MessageUtils(Object):
 
     @classmethod
     def newChain(cls, *args):
-        return cls.static.newChain(*args)
+        return cls.static.newChain(list(args))
 
 
 ###### net.mamoe.mirai.contact

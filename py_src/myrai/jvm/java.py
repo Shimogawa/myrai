@@ -19,7 +19,7 @@ class JavaClassObject(Generic[_T_OBJECT], JavaObject):
 
 
 class Object(JavaClass, JavaObject):
-    __cached_java_class = None
+    __cached_java_class: JavaClass = None
     _fqn = "java.lang.Object"
 
     @classmethod
@@ -32,12 +32,12 @@ class Object(JavaClass, JavaObject):
     @classmethod
     @property
     def static(cls: Type[_T_OBJECT]) -> _T_OBJECT:
-        return cls._java_class  # type: ignore
+        return cls.__cached_java_class
 
     @classmethod
     @property
     def _class(cls: Type[_T_OBJECT]) -> JavaClassObject:
-        return cls._java_class._java_lang_class  # type: ignore
+        return cls.__cached_java_class._java_lang_class
 
     @classmethod
     def new(cls: Type[_T_OBJECT], *args) -> _T_OBJECT:

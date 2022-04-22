@@ -7,7 +7,7 @@ from myrai.mirai_types import MiraiPackage, Bot, Event
 
 from importlib.resources import files
 
-VERSION = "0.0.1"
+VERSION = "0.0.2"
 
 _T_EVENT = TypeVar("_T_EVENT", bound=Event)
 
