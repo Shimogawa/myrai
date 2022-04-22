@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  build_java:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,16 +22,31 @@ jobs:
           java-version: "11"
           distribution: "zulu"
           server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
-      - name: Build with Maven
-        run: mvn -B clean compile assembly:single antrun:run@copy-jar
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+      - name: Install python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install build
-      - name: Build
+          pip install -r requirements.txt
+      - name: Add maven dep
+        run: |
+          wget https://files.pythonhosted.org/packages/ce/1f/b00295b6da3bd2f050912b9f71fdb436ae8f1601cf161365937d8553e24b/py4j-0.10.9.5.tar.gz
+          tar xzf py4j-0.10.9.5.tar.gz
+          cd py4j-0.10.9.5
+          python setup.py install
+          cd ..
+          JAR_DIR=py4j-0.10.9.5/py4j-java sh ./dep_install.sh
+      - name: Build with Maven
+        run: mvn -B clean compile assembly:single antrun:run@copy-jar
+      - name: Build python
         run: |
           python -m build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: |
+            target/*.jar
+            dist/*
