@@ -7,9 +7,40 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+        java-version: ["11"]
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/workflows/build.yml
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: "zulu"
+          server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+          pip install -r requirements.txt
+      - name: Add maven dep
+        run: |
+          wget https://files.pythonhosted.org/packages/ce/1f/b00295b6da3bd2f050912b9f71fdb436ae8f1601cf161365937d8553e24b/py4j-0.10.9.5.tar.gz
+          tar xzf py4j-0.10.9.5.tar.gz
+          cd py4j-0.10.9.5
+          python setup.py install
+          cd ..
+          JAR_DIR=py4j-0.10.9.5/py4j-java sh ./dep_install.sh
+      - name: Build with Maven
+        run: mvn -B clean compile assembly:single antrun:run@copy-jar
+      - name: Build python
+        run: |
+          python -m build
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')

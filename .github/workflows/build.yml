@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - master
-  workflow_call: {}
 
 jobs:
   build:
@@ -15,12 +14,13 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9"]
+        java-version: ["11"]
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK 11
         uses: actions/setup-java@v3
         with:
-          java-version: "11"
+          java-version: ${{ matrix.java-version }}
           distribution: "zulu"
           server-id: maven # Value of the distributionManagement/repository/id field of the pom.xml
       - name: Set up Python ${{ matrix.python-version }}
@@ -45,9 +45,9 @@ jobs:
       - name: Build python
         run: |
           python -m build
-      - uses: actions/upload-artifact@v3
-        with:
-          name: packages
-          path: |
-            target/*.jar
-            dist/*
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: packages
+      #     path: |
+      #       target/*.jar
+      #       dist/*
