@@ -1,5 +1,7 @@
 # Myrai
 
+[![build](https://github.com/Shimogawa/myrai/actions/workflows/build.yml/badge.svg)](https://github.com/Shimogawa/myrai/actions/workflows/build.yml)
+
 用 Python (>=3.9) 写你熟悉的 [`mirai-core`][mirai-core]！（WIP）
 
 使用了 [`py4j`][py4j]。自带一个接口的 jar 文件，并且会自己启动。可以设置使用其它 jar 文件或不从 Python 端启动。
