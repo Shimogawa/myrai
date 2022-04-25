@@ -29,14 +29,14 @@ pip install myrai
 ### 初始化
 
 ```py
-import myrai
+from myrai import mirai
 
-myrai.init()
+mirai.init()
 # ========
-bot = myrai.start_bot(114514, "password")  # qq 和 password
+bot = mirai.start_bot(114514, "password")  # qq 和 password
 # -------- 或者
 import hashlib
-bot = myrai.start_bot(
+bot = mirai.start_bot(
     114514,
     hashlib.md5("password".encode("utf-8")).digest()  # 用 MD5
 )
@@ -79,16 +79,16 @@ MessageUtils.buildMessageChain(...)  # 不OK
 ### 收尾
 
 ```py
-myrai.close()
+mirai.close()
 ```
 
 建议使用 `atexit`。
 
 ```py
 import atexit
-import myrai
+from myrai import mirai
 
-atexit.register(myrai.close)
+atexit.register(mirai.close)
 ```
 
 [py4j]: https://github.com/py4j/py4j
