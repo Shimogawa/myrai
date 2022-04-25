@@ -14,13 +14,32 @@
 
 ## 使用方法
 
+### 前提条件
+
+- Python 3.9+
+- Java 11+
+
+### 安装
+
+```sh
+pip install myrai
+```
+
 ### 初始化
 
 ```py
 import myrai
 
 myrai.init()
-bot = myrai.start_bot(114514, "1919810")  # qq and password
+# ========
+bot = myrai.start_bot(114514, "password")  # qq 和 password
+# -------- 或者
+import hashlib
+bot = myrai.start_bot(
+    114514,
+    hashlib.md5("password".encode("utf-8")).digest()  # 用 MD5
+)
+# ========
 bot.login()
 ```
 
@@ -67,8 +86,6 @@ myrai.close()
 ```py
 import atexit
 import myrai
-
-...
 
 atexit.register(myrai.close)
 ```

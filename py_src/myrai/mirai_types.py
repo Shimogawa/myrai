@@ -243,6 +243,10 @@ class MessageUtils(Object):
 ###### net.mamoe.mirai.contact
 
 
+class ContactList(Object):
+    _fqn = "net.mamoe.mirai.contact.ContactList"
+
+
 class ContactOrBot(Object):
     _fqn = "net.mamoe.mirai.contact.ContactOrBot"
 

@@ -26,10 +26,14 @@ py4j>=0.10
 
 def setup_pkg():
     import setuptools
+    import sys
+
+    sys.path.append("py_src")
+    import myrai
 
     metadata = dict(
         name="myrai",
-        version="0.0.2",
+        version=myrai.__version__,
         author="Rebuild",
         author_email="admin@rebuild.moe",
         license="AGPLv3",

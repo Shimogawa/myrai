@@ -1,1 +1,1 @@
-from .mirai import gw, mirai, init, start_bot, close, subscribe_always
+__version__ = "0.1.0"

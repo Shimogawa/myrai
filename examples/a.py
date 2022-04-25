@@ -3,7 +3,7 @@ import atexit
 
 sys.path.append("py_src")
 
-from myrai import init, start_bot, subscribe_always, close, gw
+from myrai.mirai import init, start_bot, subscribe_always, close, gw
 from myrai.mirai_types import (
     At,
     EventPriority,
@@ -18,6 +18,7 @@ from myrai.mirai_types import (
 from myrai.jvm import java
 
 init()
+atexit.register(close)
 
 bot = start_bot(int(sys.argv[1]), sys.argv[2])
 bot.login()
@@ -37,5 +38,3 @@ def listener(e: MessageEvent):
 # )
 
 subscribe_always(bot, MessageEvent, listener)
-
-atexit.register(close)

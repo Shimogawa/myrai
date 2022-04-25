@@ -1,17 +1,16 @@
 import subprocess
 import time
-from typing import Callable, Optional, Type, TypeVar
+from typing import Callable, Optional, Type, TypeVar, Union
 
+from myrai import __version__
 import myrai.jvm.java as java
-from myrai.mirai_types import MiraiPackage, Bot, Event
+from myrai.mirai_types import ListeningStatus, MiraiPackage, Bot, Event
 
 from importlib.resources import files
 
-VERSION = "0.0.2"
-
 _T_EVENT = TypeVar("_T_EVENT", bound=Event)
 
-_DEFAULT_JAR = str(files("myrai").joinpath(f"resources/myrai-{VERSION}.jar"))
+_DEFAULT_JAR = str(files("myrai").joinpath(f"resources/myrai-{__version__}.jar"))
 
 
 class Mirai:
@@ -78,7 +77,7 @@ def init(**kwargs):
     mirai.start(**kwargs)
 
 
-def start_bot(qq: int, passwd: str) -> Bot:
+def start_bot(qq: int, passwd: Union[str, bytes]) -> Bot:
     if not mirai.started:
         raise RuntimeError("call init() first")
     return mirai.get_mirai_pkg().BotFactory.INSTANCE.newBot(qq, passwd)
@@ -90,5 +89,11 @@ def close():
 
 def subscribe_always(bot: Bot, event: Type[_T_EVENT], fn: Callable[[_T_EVENT], None]):
     bot.getEventChannel().subscribeAlways(
-        java.get_class_by_name(event._fqn), java.Consumer(fn)
+        event._class, java.Consumer(fn)  # type: ignore
     )
+
+
+def subscribe(
+    bot: Bot, event: Type[_T_EVENT], fn: Callable[[_T_EVENT], ListeningStatus]
+):
+    bot.getEventChannel().subscribe(event._class, java.Function(fn))  # type: ignore

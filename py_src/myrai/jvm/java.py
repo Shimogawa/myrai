@@ -32,12 +32,12 @@ class Object(JavaClass, JavaObject):
     @classmethod
     @property
     def static(cls: Type[_T_OBJECT]) -> _T_OBJECT:
-        return cls.__cached_java_class
+        return cls._java_class  # type: ignore
 
     @classmethod
     @property
     def _class(cls: Type[_T_OBJECT]) -> JavaClassObject:
-        return cls.__cached_java_class._java_lang_class
+        return cls._java_class._java_lang_class  # type: ignore
 
     @classmethod
     def new(cls: Type[_T_OBJECT], *args) -> _T_OBJECT:
@@ -214,6 +214,21 @@ class JavaStream(Generic[_T]):
         ...
 
 
-class JavaCollection:
-    def stream(self) -> JavaStream:
+class JavaCollection(Generic[_T]):
+    def stream(self) -> JavaStream[_T]:
+        ...
+
+    def clear(self) -> None:
+        ...
+
+    def add(self, e: _T) -> bool:
+        ...
+
+    def toArray(self) -> JavaArray:
+        ...
+
+    def contains(self, o: JavaObject) -> bool:
+        ...
+
+    def remove(self, o: JavaObject) -> bool:
         ...
