@@ -1,6 +1,7 @@
 # Myrai
 
 [![build](https://github.com/Shimogawa/myrai/actions/workflows/build.yml/badge.svg)](https://github.com/Shimogawa/myrai/actions/workflows/build.yml)
+[![PyPI](https://img.shields.io/pypi/v/myrai)](https://pypi.org/project/myrai/)
 
 用 Python (>=3.9) 写你熟悉的 [`mirai-core`][mirai-core]！（WIP）
 
